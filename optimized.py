@@ -85,9 +85,7 @@ execution_time = end_time - start_time
 # Affichage du meilleur investissement
 print("Meilleur portefeuille d'actions :")
 for action in meilleur_portefeuille:
-    print(
-        f"{action['name']} - Coût : {action['cost']} euros, Bénéfice : {action['cost'] * action['profit']/100} euros après 2 ans"
-    )
+    print(f"{action['name']} - Coût : {action['cost']/100} euros")
 print("Temps d'exécution : {:.2f} secondes".format(execution_time))
 
 # Calcul du coût total et du profit maximal
