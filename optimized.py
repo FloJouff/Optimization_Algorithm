@@ -2,6 +2,10 @@ import csv
 import time
 import sys
 
+
+if len(sys.argv) != 2:
+    print("Veuillez fournir le nom du fichier CSV en tant qu'argumment")
+    sys.exit(1)
 print(sys.argv)
 
 
@@ -66,10 +70,8 @@ def best_choices(actions: list, budget: int):
 
 
 # Lecture des données à partir d'un fichier CSV
-if len(sys.argv) < 2:
-    print("Veuillez indiquer un fichier source")
-else:
-    actions = read_actions(sys.argv[1])
+
+actions = read_actions(sys.argv[1])
 
 
 # Définition du budget maximum par client
