@@ -1,5 +1,8 @@
 import csv
 import time
+import sys
+
+print(sys.argv)
 
 
 # Fonction pour lire les données à partir d'un fichier CSV
@@ -18,8 +21,11 @@ def read_actions(filename):
         reader = csv.reader(file)
         next(reader)  # Skip header row
         for row in reader:
-            action = {"name": row[0], "cost": float(row[1]), "profit": float(row[2])}
-            if action["cost"] > 0:
+            cost = int(float(row[1]) * 100)
+            profit_float = float(row[1]) * (float(row[2]) / 100)
+            profit = int(profit_float * 100)
+            action = {"name": row[0], "cost": cost, "profit": profit}
+            if cost > 0 and profit > 0:
                 actions.append(action)
     return actions
 
@@ -44,10 +50,8 @@ def best_choices(actions: list, budget: int):
 
     for i in range(1, n + 1):
         for j in range(1, budget + 1):
-            if int(actions[i - 1]["cost"] * 100) <= j:
-                dp[i][j] = max(
-                    actions[i - 1]["profit"] + dp[i - 1][j - int(actions[i - 1]["cost"] * 100)], dp[i - 1][j]
-                )
+            if actions[i - 1]["cost"] <= j:
+                dp[i][j] = max(actions[i - 1]["profit"] + dp[i - 1][j - actions[i - 1]["cost"]], dp[i - 1][j])
             else:
                 dp[i][j] = dp[i - 1][j]
 
@@ -56,17 +60,20 @@ def best_choices(actions: list, budget: int):
     for i in range(n, 0, -1):
         if dp[i][j] != dp[i - 1][j]:
             selected_actions.append(actions[i - 1])
-            j -= int(actions[i - 1]["cost"] * 100)
+            j -= actions[i - 1]["cost"]
 
     return selected_actions
 
 
 # Lecture des données à partir d'un fichier CSV
-actions = read_actions("actions.csv")
+if len(sys.argv) < 2:
+    print("Veuillez indiquer un fichier source")
+else:
+    actions = read_actions(sys.argv[1])
 
 
 # Définition du budget maximum par client
-budget_max = 50000
+budget_max = 500 * 100
 start_time = time.time()
 
 # Recherche de la meilleure stratégie d'investissement
@@ -84,8 +91,8 @@ for action in meilleur_portefeuille:
 print("Temps d'exécution : {:.2f} secondes".format(execution_time))
 
 # Calcul du coût total et du profit maximal
-cout_total = sum(action["cost"] for action in meilleur_portefeuille)
-profit_maximal = sum(action["cost"] / 100 * action["profit"] for action in meilleur_portefeuille)
+cout_total = sum(action["cost"] / 100 for action in meilleur_portefeuille)
+profit_maximal = sum(action["profit"] / 100 for action in meilleur_portefeuille)
 
 # Affichage du coût total et du profit maximal
 print("Coût total des actions sélectionnées :", cout_total, "euros")

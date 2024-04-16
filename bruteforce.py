@@ -1,19 +1,3 @@
-"""
-Algorithme budget
-Variable
-    depense = set()
-    liste_action = {nom, cout, benefice}
-Début
-    Tant que dépense < 500€
-        pour action i dans liste des actions:
-            si depense + cout action i < 500
-                depense = depense + cout action i
-            sinon si depense + cout action i + 1 < 500
-                depense = depense + cout action i + 1
-
-
-"""
-
 import csv
 import time
 
@@ -24,8 +8,9 @@ def read_actions(filename):
         reader = csv.reader(file)
         next(reader)
         for row in reader:
-            action = {"name": row[0], "cost": int(row[1]), "profit": float(row[2]) / 100}
-            actions.append(action)
+            action = {"name": row[0], "cost": float(row[1]), "profit": float(row[2]) / 100}
+            if action["cost"] > 0:
+                actions.append(action)
     return actions
 
 
